@@ -6,7 +6,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateUserDto } from '../user/dtos';
-import { SignInDto } from './dtos';
+import { ResetPasswordDto, SignInDto } from './dtos';
 import { IAccessToken } from './interfaces';
 import { AuthService } from './services';
 
@@ -40,5 +40,21 @@ export class AuthController {
 
       throw new InternalServerErrorException(error);
     }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body('email') email: string,
+  ): Promise<{ message: string }> {
+    await this.authService.forgotPassword(email);
+
+    return { message: 'Password reset email sent successfully' };
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<void> {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }

@@ -20,10 +20,19 @@ export interface IRedisConfig {
   port: number;
 }
 
+export interface IAWSConfig {
+  accessKey: string;
+  secretAccessKey: string;
+  region: string;
+  from: string;
+}
+
 export interface IConfig {
   nodeEnv: ENodeEnvironment;
   port: number;
+  backendUrl: string;
   jwt: IJwtConfig;
   database: IDatabaseConfig;
   redis: IRedisConfig;
+  aws: IAWSConfig;
 }

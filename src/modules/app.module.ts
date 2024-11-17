@@ -4,6 +4,7 @@ import { configure, validate } from '../config';
 import { CacheModule } from './cache/cache.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
     CacheModule,
     UserModule,
     AuthModule,
+    MailerModule,
   ],
 })
 export class AppModule {}

@@ -6,6 +6,8 @@ import { JwtStrategy } from '../../common/strategies/jwt.strategy';
 import { IConfig, IJwtConfig } from '../../config/interfaces';
 import { CacheModule, redisService } from '../cache/cache.module';
 import { CacheService } from '../cache/services';
+import { MailerModule } from '../mailer/mailer.module';
+import { MailerService } from '../mailer/services';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserRepository } from '../user/repositories';
 import { UserService } from '../user/services';
@@ -18,6 +20,7 @@ import { AuthService } from './services';
     PassportModule,
     UserModule,
     CacheModule,
+    MailerModule,
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],
@@ -40,6 +43,7 @@ import { AuthService } from './services';
     PrismaService,
     CacheService,
     redisService,
+    MailerService,
     JwtStrategy,
   ],
 })
