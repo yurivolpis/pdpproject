@@ -1,42 +1,37 @@
 version: '3.8'
 services:
-  database:
-    container_name: database
-    image: 'pgrouting/osm'
+  postgres:
+    container_name: pdpproject-postgres
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: pdpproject-postgres
     restart: always
     ports:
-      - '${DB_PORT}:5432'
+      - '${PG_PORT}:5432'
     environment:
-      POSTGRES_DB: '${DB_NAME}'
-      POSTGRES_USER: '${DB_USER}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_DB: '${PG_NAME}'
+      POSTGRES_USER: '${PG_USER}'
+      POSTGRES_PASSWORD: '${PG_PASSWORD}'
     volumes:
       - postgres:/var/lib/postgresql/data
-      # copy the script to create postgis and pgrouting extensions
-      # - ./sql-scripts/1-init-extensions.sql:/docker-entrypoint-initdb.d/1-init-extensions.sql
-      # 
-      # - ./sql-scripts/2-seed-osm-data.sh:/docker-entrypoint-initdb.d/2-seed-osm-data.sh
-      # copy script for changing weights to prioritize pedestrian and cycle ways
-      # - ./sql-scripts/4-change-weights-for-pedestrian.sql:/docker-entrypoint-initdb.d/4-change-weights-for-pedestrian.sql
-      # populate the table
-      # - ./sql-scripts/insert-rows.sql:/docker-entrypoint-initdb.d/2-insert-rows.sql
-      # configure graph topology
-      # - ./sql-scripts/create-topology.sql:/docker-entrypoint-initdb.d/3-create-topology.sql
-      # copy the osm data
-      # - ./osm-data/switzerland-exact.osm.pbf:/usr/share/switzerland-exact.osm.pbf
-      # copy the osm style configuration
-      # - ./osm-data/custom.style:/usr/share/osm2pgsql/custom.style
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   container_name: pgadmin
-  #   restart: always
-  #   ports:
-  #     - "8888:80"
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: root@gmail.com
-  #     PGADMIN_DEFAULT_PASSWORD: root
-  #   volumes:
-  #     - pgadmin-data:/var/lib/pgadmin
+  app:
+    container_name: pdpproject-api
+    build:
+      context: ./
+      dockerfile: ./docker/app/Dockerfile
+    image: pdpproject-api
+    command: >
+      bash -c "npm run prisma:migrate:deploy && npm run prisma:generate && npm run start:prod"
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - ./.env
+    volumes:
+      - ./:/app
+      - /app/node_modules
 volumes:
   postgres:
-  # pgadmin-data:
