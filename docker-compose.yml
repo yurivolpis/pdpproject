@@ -27,7 +27,7 @@ services:
       - postgres
     restart: always
     ports:
-      - '${PORT}:${PORT}'
+      - '80:${PORT}'
     env_file:
       - ./.env
     volumes:
