@@ -13,6 +13,7 @@ export const redisService: Provider = {
     return new Redis({
       host: redisConfig.host,
       port: redisConfig.port,
+      connectTimeout: 1000,
     });
   },
 };
